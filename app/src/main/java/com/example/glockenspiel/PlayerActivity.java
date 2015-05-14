@@ -76,7 +76,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		patterns = new Sequence(getApplicationContext(), "primer");
 		// start = Button(); We still need to set this
 		start_btn = (Button)findViewById(R.id.start_btn);
-		setOnClickListener(start_btn);
+
 	}
 
 	
@@ -135,11 +135,15 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	/*************************
 	 * start sequence button *
 	 *************************/
-	private void setOnClickListener(final Button button){
+	public void startSequence(View view){
 		//play sequence
 		if (patterns.getPatterns().size() > 0){
+			boolean play = true;
 			for (Pattern p : patterns.getPatterns()) {
-				play_pattern(p);
+				if (play) {
+					play_pattern(p);
+				}
+				play=false;
 			}
 		}
 	}
@@ -159,10 +163,19 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		for (int i = 0; i < notes.length(); i++){
 			String str = notes.substring(i);
 			mySoundPool.play(keya_sound, volume, volume, 1, 0, 1f);
+			String s = rhythm.substring(i, i+1);
+			Integer r = null;
 			try {
-				Thread.sleep(Integer.parseInt(rhythm.substring(i)) * 500);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+				r = Integer.parseInt(s);
+			} catch (NumberFormatException e){
+				// do nothing
+			}
+			if (r != null){
+				try {
+					Thread.sleep(Integer.parseInt(rhythm.substring(i, i+1)) * 500);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}

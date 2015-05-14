@@ -22,7 +22,8 @@ public class Sequence extends ArrayList {
     private ArrayList<Pattern> patterns;
 
     public Sequence(Context context, String seq_name) {
-        this.patterns = null;
+        this.patterns = new ArrayList<Pattern>();
+        ;
         //get json
         AssetManager assetManager = context.getAssets();
         InputStream input;
@@ -49,19 +50,8 @@ public class Sequence extends ArrayList {
                 JSONArray jRhythmArray = jRealObject.getJSONArray("rhythm");
                 JSONArray jNotesArray = jRealObject.getJSONArray("notes");
 
-                //parse each array for individual lists
-                ArrayList<Integer> rhythms = new ArrayList<Integer>();
-                ArrayList<String> notes = new ArrayList<String>();
-                if (jRhythmArray != null) {
-                    for (int j=0;j<jRhythmArray.length();j++){
-                        rhythms.add((Integer) jRhythmArray.get(j));
-                    }
-                }
-                if (jNotesArray != null) {
-                    for (int j=0;j<jNotesArray.length();j++){
-                        notes.add(jNotesArray.get(j).toString());
-                    }
-                }
+                String rhythms = jRhythmArray.toString();
+                String notes = jNotesArray.toString();
                 Pattern pat = new Pattern(rhythms, notes);
                 patterns.add(pat);
             }

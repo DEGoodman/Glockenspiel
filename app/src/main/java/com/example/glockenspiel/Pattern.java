@@ -5,38 +5,38 @@ import java.util.ArrayList;
 /**
  * Created by erik on 5/8/15.
  */
-public class Pattern extends ArrayList {
-    private ArrayList<Integer> rhythm;
-    private ArrayList<String> notes;
+public class Pattern {
+    private String rhythm;
+    private String notes;
     public int length;
 
-    public Pattern (ArrayList<Integer> nums, ArrayList<String> notes) {
+    public Pattern (String nums, String notes) {
         this.rhythm = nums;
         this.notes = notes;
     }
 
-    public void setRhythm(ArrayList<Integer> rhythm) {
+    public void setRhythm(String rhythm) {
         this.rhythm = rhythm;
     }
 
-    public void addRythym(Integer num){
-        this.rhythm.add(num);
+    public void addRythym(String num){
+        this.rhythm += num;
     }
 
     public String getRhythms(){
-        return String.valueOf(rhythm);
+        return rhythm;
     }
 
 
-    public void setNotes(ArrayList<String> notes) {
+    public void setNotes(String notes) {
         this.notes = notes;
     }
 
     public void addNote(String note){
-        this.notes.add(note);
+        this.notes += note;
     }
 
     public String getNotes(){
-        return String.valueOf(notes);
+        return notes;
     }
 }
