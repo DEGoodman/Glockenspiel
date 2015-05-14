@@ -37,6 +37,7 @@ public class MenuActivity extends Activity implements AdapterView.OnItemSelected
 					public void onClick(View v) {
 						// Reference to player activity
 						Intent intent = new Intent(v.getContext(), PlayerActivity.class);
+                        intent.putExtra("selected", level_spinner.getSelectedItem().toString());
 						startActivityForResult(intent, 0);
 					}
 				});

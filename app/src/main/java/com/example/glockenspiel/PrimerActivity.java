@@ -17,9 +17,8 @@ import java.util.ArrayList;
 public class PrimerActivity extends Activity {
 	// Variables
 	private MediaPlayer background_music, key_c_player, key_d_player, key_e_player, key_f_player, key_g_player, key_a_player, key_b_player, key_c2_player;
-	private Button a,b,c,d,e,f,g,c2,start_btn;
+	private Button a,b,c,d,e,f,g,c2;
 	private CharSequence playKey;
-	private Sequence patterns;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +36,6 @@ public class PrimerActivity extends Activity {
 		//set up keyboard
 		populateKeys(); //<<----- initialize keys function
 
-		//load sequence
-		patterns = new Sequence(getApplicationContext(), "primer");
-		// start = Button(); We still need to set this
-		start_btn = (Button)findViewById(R.id.start_btn);
-		setOnClickListener(start_btn);
 	}
 
 
@@ -105,51 +99,6 @@ public class PrimerActivity extends Activity {
 				}).start();
 			}
 		});
-	}
-
-	/*************************
-	 * start sequence button *
-	 *************************/
-	private void setOnClickListener(final Button button){
-		//play sequence
-		if (patterns.getPatterns().size() > 0){
-			for (Pattern p : patterns.getPatterns()) {
-				play_pattern(p);
-			}
-		}
-	}
-
-	public void play_pattern(Pattern pattern){
-		play(pattern);
-		Pattern results = record();
-		Boolean pass = compare_play_and_record(pattern, results);
-		if (!pass){
-			play_pattern(pattern);
-		}
-	}
-
-	private void play(Pattern p) {
-		String notes = p.getNotes();
-		String rhythm = p.getRhythms();
-		for (int i = 0; i < notes.length(); i++){
-			String str = notes.substring(i);
-			key_a_player.start();
-			try {
-				Thread.sleep(Integer.parseInt(rhythm.substring(i)) * 500);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
-
-
-	private Pattern record() {
-		Pattern p = new Pattern(null, null);
-		return p;
-	}
-
-	private boolean compare_play_and_record(Pattern p, Pattern r){
-		return true;
 	}
 
 	@Override

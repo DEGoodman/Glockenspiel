@@ -51,6 +51,7 @@ public class Sequence extends ArrayList {
                 JSONArray jNotesArray = jRealObject.getJSONArray("notes");
 
                 String rhythms = jRhythmArray.toString();
+                Log.d("rhythms: ",rhythms);
                 String notes = jNotesArray.toString();
                 Pattern pat = new Pattern(rhythms, notes);
                 patterns.add(pat);

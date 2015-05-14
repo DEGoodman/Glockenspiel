@@ -1,7 +1,9 @@
 package com.example.glockenspiel;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -34,7 +36,31 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
-		
+
+		// get level info
+		Bundle extras=getIntent().getExtras();
+		String value = null;
+		if(extras!=null) {
+			value = extras.getString("selected");
+		}
+		final Context context = this;
+
+		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
+
+		// set title
+		alertDialogBuilder.setTitle("Selected Level");
+
+		// set dialog message
+		alertDialogBuilder
+				.setMessage(value);
+
+		// create alert dialog
+		final AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// show it
+		alertDialog.show();
+
 		//play ambiance background music
         float leftVolume = (float)0.1;
         float rightVolume = (float)0.1;
@@ -73,7 +99,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         populateKeys(); //<<----- initialize keys function
 
 		//load sequence
-		patterns = new Sequence(getApplicationContext(), "primer");
+		patterns = new Sequence(getApplicationContext(), value);
 		// start = Button(); We still need to set this
 		start_btn = (Button)findViewById(R.id.start_btn);
 
