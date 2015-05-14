@@ -184,26 +184,17 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	}
 
 	private void play(Pattern p) {
-		String notes = p.getNotes();
-		String rhythm = p.getRhythms();
-		for (int i = 0; i < notes.length(); i++){
-			String str = notes.substring(i);
-			mySoundPool.play(keya_sound, volume, volume, 1, 0, 1f);
-			String s = rhythm.substring(i, i+1);
-			Integer r = null;
-			try {
-				r = Integer.parseInt(s);
-			} catch (NumberFormatException e){
-				// do nothing
-			}
-			if (r != null){
-				try {
-					Thread.sleep(Integer.parseInt(rhythm.substring(i, i+1)) * 500);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
+		String[][] notes = p.getNotes();
+		int[][] rhythm = p.getRhythms();
+
+        // try to get just one rhythm in one pattern to play correctly
+		for (int i = 0; i < notes[0].length; i++){
+            mySoundPool.play(keya_sound, volume, volume, 1, 0, 1f);
+            int r = rhythm[0][i];
+            try {
+                Thread.sleep(r * 500);
+            } catch (InterruptedException e1) {e1.printStackTrace();}
+        }
 	}
 
 

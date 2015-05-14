@@ -50,9 +50,30 @@ public class Sequence extends ArrayList {
                 JSONArray jRhythmArray = jRealObject.getJSONArray("rhythm");
                 JSONArray jNotesArray = jRealObject.getJSONArray("notes");
 
-                String rhythms = jRhythmArray.toString();
-                Log.d("rhythms: ",rhythms);
-                String notes = jNotesArray.toString();
+                //parse each array for individual lists
+                int[][] rhythms = new int[jRhythmArray.length()][jRhythmArray.getJSONArray(0).length()];
+                String[][] notes = new String[jNotesArray.length()][jNotesArray.getJSONArray(0).length()];
+                if (jRhythmArray != null) {
+                    for (int j=0;j<jRhythmArray.length();j++) {
+                        try {
+                            for (int k = 0; k < jRhythmArray.getJSONArray(j).length(); k++){
+                                rhythms[j][k] = jRhythmArray.getJSONArray(j).getInt(k);
+                            }
+                        } catch (JSONException e){ //do nothing
+                            Log.d("JSONException", String.valueOf(jRhythmArray.get(j)));
+                        };
+                    }
+                }
+                if (jNotesArray != null) {
+                    for (int j=0;j<jNotesArray.length();j++){
+                        try {
+                            for (int k = 0; k < jNotesArray.getJSONArray(j).length(); k++){
+                                notes[j][k] = String.valueOf(jNotesArray.get(j));
+                            }
+                        } catch (JSONException e){ //do nothing
+                        };
+                    }
+                }
                 Pattern pat = new Pattern(rhythms, notes);
                 patterns.add(pat);
             }
