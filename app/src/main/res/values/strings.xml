@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Glockenspiel</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_player">PlayerActivity</string>
+    <string name="c_fix">C</string>
+    <string name="d_fix">D</string>
+    <string name="e_fix">E</string>
+    <string name="f_fix">F</string>
+    <string name="g_fix">G</string>
+    <string name="a_fix">A</string>
+    <string name="b_fix">B</string>
+    <string name="play_fix">Play</string>
+
+    <string-array name="levels">
+        <item>Primer</item>
+        <item>Beginner</item>
+        <item>Intermediate</item>
+    </string-array>
+
+    <string name="title_activity_primer">PrimerActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_beginner">BeginnerActivity</string>
+    <string name="s">Start!</string>
+
+</resources>
