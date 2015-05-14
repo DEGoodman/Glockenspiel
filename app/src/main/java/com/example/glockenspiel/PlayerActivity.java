@@ -10,6 +10,7 @@ import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -19,72 +20,77 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class PlayerActivity extends Activity implements OnTouchListener{
-	// Variables
-	private MediaPlayer background_music;
-	private Button a,b,c,d,e,f,g,c2, start_btn;
-	private CharSequence playKey;
-	public SoundPool mySoundPool;
-	private boolean loaded = false;
-	private int keya_sound, keyb_sound, keyc_sound, keyd_sound, keye_sound;
-	private int keyf_sound, keyg_sound, keyc2_sound;
-	private AudioManager audioManager;
-	private float actualVolume, maxVolume, volume;
-	private Sequence patterns;
+    // Variables
+    private MediaPlayer background_music;
+    private Button a,b,c,d,e,f,g,c2, start_btn;
+    private CharSequence playKey;
+    public SoundPool mySoundPool;
+    private boolean loaded = false;
+    private int keya_sound, keyb_sound, keyc_sound, keyd_sound, keye_sound;
+    private int keyf_sound, keyg_sound, keyc2_sound;
+    private AudioManager audioManager;
+    private float actualVolume, maxVolume, volume;
+    private Sequence patterns;
+    private boolean startRecord = false;
+    private  AlertDialog.Builder alertDialogBuilder;
+    AlertDialog alertDialog;
+    private String value;
+    public static final Object monitor = new Object();
+    public static boolean monitorState = false;
+    private boolean loop;
 
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_player);
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_player);
 
-		// get level info
-		Bundle extras=getIntent().getExtras();
-		String value = null;
-		if(extras!=null) {
-			value = extras.getString("selected");
-		}
-		final Context context = this;
+        // get level info
+        Bundle extras=getIntent().getExtras();
+        if(extras!=null) {
+            value = extras.getString("selected");
+        }
+        final Context context = this;
 
-		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-				context);
+        alertDialogBuilder = new AlertDialog.Builder(
+                context);
 
-		// set title
-		alertDialogBuilder.setTitle("Selected Level");
+        // set title
+        alertDialogBuilder.setTitle("Selected Level");
 
-		// set dialog message
-		alertDialogBuilder
-				.setMessage(value);
+        // set dialog message
+        alertDialogBuilder.setMessage(value);
 
-		// create alert dialog
-		final AlertDialog alertDialog = alertDialogBuilder.create();
+        // create alert dialog
+        alertDialog = alertDialogBuilder.create();
 
-		// show it
-		alertDialog.show();
+        // show it
+        alertDialog.show();
 
-		//play ambiance background music
+        //play ambiance background music
         float leftVolume = (float)0.1;
         float rightVolume = (float)0.1;
         background_music = MediaPlayer.create(PlayerActivity.this, R.raw.beach_ambience);
         background_music.setVolume(leftVolume, rightVolume);
         background_music.setLooping(true);
         background_music.start();
-        
+
         // Initialize SoundPool
         mySoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         mySoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-			public void onLoadComplete(SoundPool mySoundPool, int sampleId, int status) {
-				loaded = true;
-			}
-		});
-        
-	     // Getting the user sound settings
-	    audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-	    actualVolume = (float) audioManager
-	      .getStreamVolume(AudioManager.STREAM_MUSIC);
-	    maxVolume = (float) audioManager
-	      .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-	    volume = actualVolume / maxVolume;
-        
+            public void onLoadComplete(SoundPool mySoundPool, int sampleId, int status) {
+                loaded = true;
+            }
+        });
+
+        // Getting the user sound settings
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        actualVolume = (float) audioManager
+                .getStreamVolume(AudioManager.STREAM_MUSIC);
+        maxVolume = (float) audioManager
+                .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        volume = actualVolume / maxVolume;
+
         // Load audio files
         keya_sound = mySoundPool.load(this, R.raw.a, 1);
         keyb_sound = mySoundPool.load(this, R.raw.b, 1);
@@ -94,143 +100,214 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         keyf_sound = mySoundPool.load(this, R.raw.f, 1);
         keyg_sound = mySoundPool.load(this, R.raw.g, 1);
         keyc2_sound = mySoundPool.load(this, R.raw.c2, 1);
-		
+
         //set up keyboard
         populateKeys(); //<<----- initialize keys function
 
-		//load sequence
-		patterns = new Sequence(getApplicationContext(), value);
-		// start = Button(); We still need to set this
-		start_btn = (Button)findViewById(R.id.start_btn);
+        //load sequence
+        patterns = new Sequence(getApplicationContext(), value);
+        // start = Button(); We still need to set this
+        start_btn = (Button)findViewById(R.id.start_btn);
 
-	}
+    }
 
-	
-	/************************************
-	 * Helper method to layout keyboard *
-	 ************************************/
-	private void populateKeys() {
-		//initialize buttons
-		c = (Button)findViewById(R.id.key_c);
-		d = (Button)findViewById(R.id.key_d);
-		e = (Button)findViewById(R.id.key_e);
-		f = (Button)findViewById(R.id.key_f);
-		g = (Button)findViewById(R.id.key_g);
-		a = (Button)findViewById(R.id.key_a);
-		b = (Button)findViewById(R.id.key_b);
-		c2 = (Button)findViewById(R.id.key_c2);
-		
-		//assign each sound to key
-		setOnClickListener(c, keyc_sound);
-		setOnClickListener(d, keyd_sound);
-		setOnClickListener(e, keye_sound);
-		setOnClickListener(f, keyf_sound);
-		setOnClickListener(g, keyg_sound);
-		setOnClickListener(a, keya_sound);
-		setOnClickListener(b, keyb_sound);
-		setOnClickListener(c2, keyc2_sound);
-	}
 
-	
-	/****************************************
-	 * Helper method to set onClickListener *
-	 ****************************************/
-	private void setOnClickListener(final Button button, final int key_player) {
-		final boolean showToast = false; //toggle toast message
-		playKey = null;
-		button.setSoundEffectsEnabled(false);
-		button.setOnClickListener(new View.OnClickListener(){
-			public void onClick(View v){
-				if(loaded){
-					mySoundPool.play(key_player, volume, volume, 1, 0, 1f);
-					Layout label = button.getLayout();
-					playKey = label.getText(); //<<----- key(s) get to played
-							
-					//display toast message when key pressed
-					if(showToast)
-					{
-						Context context = getApplicationContext();
-						Toast toast = Toast.makeText(context, playKey, Toast.LENGTH_SHORT);
-						toast.show();
-					}
-				}
-			}
-		});
-	}
+    /************************************
+     * Helper method to layout keyboard *
+     ************************************/
+    private void populateKeys() {
+        //initialize buttons
+        c = (Button)findViewById(R.id.key_c);
+        d = (Button)findViewById(R.id.key_d);
+        e = (Button)findViewById(R.id.key_e);
+        f = (Button)findViewById(R.id.key_f);
+        g = (Button)findViewById(R.id.key_g);
+        a = (Button)findViewById(R.id.key_a);
+        b = (Button)findViewById(R.id.key_b);
+        c2 = (Button)findViewById(R.id.key_c2);
 
-	/*************************
-	 * start sequence button *
-	 *************************/
-	public void startSequence(View view){
-		//play sequence
-		if (patterns.getPatterns().size() > 0){
-			boolean play = true;
-			for (Pattern p : patterns.getPatterns()) {
-				if (play) {
-					play_pattern(p);
-				}
-				play=false;
-			}
-		}
-	}
+        //assign each sound to key
+        setOnClickListener(c, keyc_sound);
+        setOnClickListener(d, keyd_sound);
+        setOnClickListener(e, keye_sound);
+        setOnClickListener(f, keyf_sound);
+        setOnClickListener(g, keyg_sound);
+        setOnClickListener(a, keya_sound);
+        setOnClickListener(b, keyb_sound);
+        setOnClickListener(c2, keyc2_sound);
+    }
 
-	public void play_pattern(Pattern pattern){
-		play(pattern);
-		Pattern results = record();
-		Boolean pass = compare_play_and_record(pattern, results);
-		if (!pass){
-			play_pattern(pattern);
-		}
-	}
 
-	private void play(Pattern p) {
-		String[][] notes = p.getNotes();
-		int[][] rhythm = p.getRhythms();
+    /****************************************
+     * Helper method to set onClickListener *
+     ****************************************/
+    private void setOnClickListener(final Button button, final int key_player) {
+        final boolean showToast = false; //toggle toast message
+        playKey = null;
+        button.setSoundEffectsEnabled(false);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (loaded) {
+                    mySoundPool.play(key_player, volume, volume, 1, 0, 1f);
+                    Layout label = button.getLayout();
+                    playKey = label.getText(); //<<----- key(s) get to played
 
-        // try to get just one rhythm in one pattern to play correctly
-		for (int i = 0; i < notes[0].length; i++){
-            mySoundPool.play(keya_sound, volume, volume, 1, 0, 1f);
-            int r = rhythm[0][i];
-            try {
-                Thread.sleep(r * 500);
-            } catch (InterruptedException e1) {e1.printStackTrace();}
+                    //display toast message when key pressed
+                    if (showToast) {
+                        Context context = getApplicationContext();
+                        Toast toast = Toast.makeText(context, playKey, Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }
+            }
+        });
+    }
+
+    /*************************
+     * start sequence button *
+     *************************/
+    public void startSequence(View view){
+
+        //* fix this
+        //play sequence
+//      if (patterns.getPatterns().size() > 0){
+//            for (Pattern p: patterns.getPatterns())
+//                play_pattern(p);
+//      } else {
+//            alertDialogBuilder.setTitle("No sequences to play!");
+//            alertDialogBuilder.setMessage("Something went wrong. Try another level.");
+//            alertDialog = alertDialogBuilder.create();
+//            alertDialog.show();
+//        }
+
+        play_pattern(patterns.getPatterns().get(0));
+    }
+
+    public void play_pattern(final Pattern p) {
+        String[][] notes = p.getNotes();
+        int[][] rhythm = p.getRhythms();
+        // check length of the inner arrays
+        if (notes[0].length != rhythm[0].length){
+            throw new RuntimeException("Arrays are not equal length!");
         }
-	}
+        // if 'Primer', loop through note sequences in order
+        if (value.compareTo("Primer") == 0) {
+            /* 'rhythm' controls outer loop.
+             * Each 'rhythm' cycles through all notes before rhythm changes
+             */
+            loop = true;
+            for (int k = 0; k < rhythm.length; k++) {
+                // outer 'notes' loop
+                for (int i = 0; i < notes.length; i++) {
+                    // inner 'notes' loop
+                    if (loop) {
+                        for (int j = 0; j < notes[0].length; j++) {
+                            String n = notes[i][j];
+                            int key = 0;
+                            switch (n) {
+                                case "C":
+                                    key = keyc_sound;
+                                    break;
+                                case "D":
+                                    key = keyd_sound;
+                                    break;
+                                case "E":
+                                    key = keye_sound;
+                                    break;
+                                case "F":
+                                    key = keyf_sound;
+                                    break;
+                                case "G":
+                                    key = keyg_sound;
+                                    break;
+                                case "A":
+                                    key = keya_sound;
+                                    break;
+                                case "B":
+                                    key = keyb_sound;
+                                    break;
+                                case "C2":
+                                    key = keyc2_sound;
+                                    break;
+                                default:
+                                    continue;
+                            }
+                            // loop for rhythm
+                            mySoundPool.play(key, volume, volume, 1, 0, 1f);
+                            int r = rhythm[k][j];
+                            try {
+                                Thread.sleep(r * 500);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        loop = false;
+                        Log.d("rhythm series: ", "next");
+                        Pattern results = record();
+                        Boolean pass = compare_play_and_record(p, results);
+                        if (!pass) {
+                            alertDialogBuilder.setTitle("Pattern not passed.");
+                            alertDialogBuilder
+                                    .setMessage("Would you like to try again?")
+                                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // if this button is clicked, restart activity
+                                            alertDialog.dismiss();
+                                            play_pattern(p);
+                                            return;
+                                        }
+                                    })
+                                    .setNegativeButton("No thanks, let me move on", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // if this button is clicked, continue on
+                                            loop = true;
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                            alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        } else {
+                            loop = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
-	private Pattern record() {
-		Pattern p = new Pattern(null, null);
-		return p;
-	}
+    private Pattern record() {
+        Pattern p = new Pattern(null, null);
+        return p;
+    }
 
-	private boolean compare_play_and_record(Pattern p, Pattern r){
-		return true;
-	}
+    private boolean compare_play_and_record(Pattern p, Pattern r){
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.player, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.player, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-
-	@Override
-	public boolean onTouch(View arg0, MotionEvent arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean onTouch(View arg0, MotionEvent arg1) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

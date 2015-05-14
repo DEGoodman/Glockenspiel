@@ -44,7 +44,7 @@ public class Sequence extends ArrayList {
             JSONObject jObject = new JSONObject(json);
             JSONArray jSequence = jObject.getJSONArray("sequence");
             // sequentially get JSON data
-            Log.d("begin array deserial.", "beginning first loop");
+//            Log.d("begin array deserial.", "beginning first loop");
             for (int i = 0; i < jSequence.length(); i++) {
                 JSONObject jRealObject = jSequence.getJSONObject(i);
                 JSONArray jRhythmArray = jRealObject.getJSONArray("rhythm");
@@ -58,8 +58,11 @@ public class Sequence extends ArrayList {
                         try {
                             for (int k = 0; k < jRhythmArray.getJSONArray(j).length(); k++){
                                 rhythms[j][k] = jRhythmArray.getJSONArray(j).getInt(k);
+//                                Log.d("Reading into rhythms", String.valueOf(rhythms[j][k]));
+//                                Log.d("j: ", String.valueOf(j));
+//                                Log.d("k: ", String.valueOf(k));
                             }
-                        } catch (JSONException e){ //do nothing
+                        } catch (JSONException e){
                             Log.d("JSONException", String.valueOf(jRhythmArray.get(j)));
                         };
                     }
@@ -68,14 +71,19 @@ public class Sequence extends ArrayList {
                     for (int j=0;j<jNotesArray.length();j++){
                         try {
                             for (int k = 0; k < jNotesArray.getJSONArray(j).length(); k++){
-                                notes[j][k] = String.valueOf(jNotesArray.get(j));
+                                notes[j][k] = String.valueOf(jNotesArray.getJSONArray(j).get(k));
+//                                Log.d("Reading into notes", String.valueOf(notes[j][k]));
+//                                Log.d("j: ", String.valueOf(j));
+//                                Log.d("k: ", String.valueOf(k));
                             }
-                        } catch (JSONException e){ //do nothing
+                        } catch (JSONException e){
+                            Log.d("JSONException", String.valueOf(jNotesArray.get(j)));
                         };
                     }
                 }
                 Pattern pat = new Pattern(rhythms, notes);
                 patterns.add(pat);
+//                Log.d("next", "pattern");
             }
 
         } catch (JSONException e) {
