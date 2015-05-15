@@ -19,10 +19,14 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class PlayerActivity extends Activity implements OnTouchListener{
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class PlayerActivity extends Activity implements OnTouchListener {
     // Variables
     private MediaPlayer background_music;
-    private Button a,b,c,d,e,f,g,c2, start_btn;
+    private Button a, b, c, d, e, f, g, c2, start_btn;
     private CharSequence playKey;
     public SoundPool mySoundPool;
     private boolean loaded = false;
@@ -32,12 +36,13 @@ public class PlayerActivity extends Activity implements OnTouchListener{
     private float actualVolume, maxVolume, volume;
     private Sequence patterns;
     private boolean startRecord = false;
-    private  AlertDialog.Builder alertDialogBuilder;
+    private AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
     private String value;
     public static final Object monitor = new Object();
     public static boolean monitorState = false;
     private boolean loop;
+    private LinkedList<int[]> indices;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -46,8 +51,8 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         setContentView(R.layout.activity_player);
 
         // get level info
-        Bundle extras=getIntent().getExtras();
-        if(extras!=null) {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
             value = extras.getString("selected");
         }
         final Context context = this;
@@ -68,8 +73,8 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         alertDialog.show();
 
         //play ambiance background music
-        float leftVolume = (float)0.1;
-        float rightVolume = (float)0.1;
+        float leftVolume = (float) 0.1;
+        float rightVolume = (float) 0.1;
         background_music = MediaPlayer.create(PlayerActivity.this, R.raw.beach_ambience);
         background_music.setVolume(leftVolume, rightVolume);
         background_music.setLooping(true);
@@ -107,24 +112,26 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         //load sequence
         patterns = new Sequence(getApplicationContext(), value);
         // start = Button(); We still need to set this
-        start_btn = (Button)findViewById(R.id.start_btn);
+        start_btn = (Button) findViewById(R.id.start_btn);
 
     }
 
 
-    /************************************
+    /**
+     * *********************************
      * Helper method to layout keyboard *
-     ************************************/
+     * **********************************
+     */
     private void populateKeys() {
         //initialize buttons
-        c = (Button)findViewById(R.id.key_c);
-        d = (Button)findViewById(R.id.key_d);
-        e = (Button)findViewById(R.id.key_e);
-        f = (Button)findViewById(R.id.key_f);
-        g = (Button)findViewById(R.id.key_g);
-        a = (Button)findViewById(R.id.key_a);
-        b = (Button)findViewById(R.id.key_b);
-        c2 = (Button)findViewById(R.id.key_c2);
+        c = (Button) findViewById(R.id.key_c);
+        d = (Button) findViewById(R.id.key_d);
+        e = (Button) findViewById(R.id.key_e);
+        f = (Button) findViewById(R.id.key_f);
+        g = (Button) findViewById(R.id.key_g);
+        a = (Button) findViewById(R.id.key_a);
+        b = (Button) findViewById(R.id.key_b);
+        c2 = (Button) findViewById(R.id.key_c2);
 
         //assign each sound to key
         setOnClickListener(c, keyc_sound);
@@ -138,9 +145,11 @@ public class PlayerActivity extends Activity implements OnTouchListener{
     }
 
 
-    /****************************************
+    /**
+     * *************************************
      * Helper method to set onClickListener *
-     ****************************************/
+     * **************************************
+     */
     private void setOnClickListener(final Button button, final int key_player) {
         final boolean showToast = false; //toggle toast message
         playKey = null;
@@ -163,10 +172,12 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         });
     }
 
-    /*************************
+    /**
+     * **********************
      * start sequence button *
-     *************************/
-    public void startSequence(View view){
+     * ***********************
+     */
+    public void startSequence(View view) {
 
         //* fix this
         //play sequence
@@ -180,98 +191,128 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 //            alertDialog.show();
 //        }
 
-        play_pattern(patterns.getPatterns().get(0));
+        patternIndex(patterns.getPatterns().get(0));
     }
 
-    public void play_pattern(final Pattern p) {
+    private void patternIndex(Pattern p) {
         String[][] notes = p.getNotes();
         int[][] rhythm = p.getRhythms();
         // check length of the inner arrays
-        if (notes[0].length != rhythm[0].length){
+        if (notes[0].length != rhythm[0].length) {
             throw new RuntimeException("Arrays are not equal length!");
+        }
+        indices = new LinkedList();
+
+        /* 'rhythm' controls outer loop.
+         * Each 'rhythm' cycles through all notes before rhythm changes
+         */
+        for (int k = 0; k < rhythm.length; k++) {
+            // outer 'notes' loop
+            for (int i = 0; i < notes.length; i++) {
+                int[] arr = new int[2];
+                arr[0] = k;
+                arr[1] = i;
+                indices.add(arr);
+            }
         }
         // if 'Primer', loop through note sequences in order
         if (value.compareTo("Primer") == 0) {
-            /* 'rhythm' controls outer loop.
-             * Each 'rhythm' cycles through all notes before rhythm changes
-             */
-            loop = true;
-            for (int k = 0; k < rhythm.length; k++) {
-                // outer 'notes' loop
-                for (int i = 0; i < notes.length; i++) {
-                    // inner 'notes' loop
-                    if (loop) {
-                        for (int j = 0; j < notes[0].length; j++) {
-                            String n = notes[i][j];
-                            int key = 0;
-                            switch (n) {
-                                case "C":
-                                    key = keyc_sound;
-                                    break;
-                                case "D":
-                                    key = keyd_sound;
-                                    break;
-                                case "E":
-                                    key = keye_sound;
-                                    break;
-                                case "F":
-                                    key = keyf_sound;
-                                    break;
-                                case "G":
-                                    key = keyg_sound;
-                                    break;
-                                case "A":
-                                    key = keya_sound;
-                                    break;
-                                case "B":
-                                    key = keyb_sound;
-                                    break;
-                                case "C2":
-                                    key = keyc2_sound;
-                                    break;
-                                default:
-                                    continue;
-                            }
-                            // loop for rhythm
-                            mySoundPool.play(key, volume, volume, 1, 0, 1f);
-                            int r = rhythm[k][j];
-                            try {
-                                Thread.sleep(r * 500);
-                            } catch (InterruptedException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                        loop = false;
-                        Log.d("rhythm series: ", "next");
-                        Pattern results = record();
-                        Boolean pass = compare_play_and_record(p, results);
-                        if (!pass) {
-                            alertDialogBuilder.setTitle("Pattern not passed.");
-                            alertDialogBuilder
-                                    .setMessage("Would you like to try again?")
-                                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, restart activity
-                                            alertDialog.dismiss();
-                                            play_pattern(p);
-                                            return;
-                                        }
-                                    })
-                                    .setNegativeButton("No thanks, let me move on", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, continue on
-                                            loop = true;
-                                            alertDialog.dismiss();
-                                        }
-                                    });
-                            alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-                        } else {
-                            loop = true;
-                        }
-                    }
-                }
+            playPattern(indices.pop(), p);
+        }
+    }
+
+    public void playPattern(final int[] index, final Pattern p) {
+        String playData = String.valueOf(index[0]) + String.valueOf(index[1]);
+        Log.d("current play data: ", playData);
+        LinkedList notes = p.getNSequence(index[1]);
+        LinkedList rhythm = p.getRSequence(index[0]);
+        // inner 'notes' loop
+        for (int j = 0; j <= notes.size(); j++) {
+            String n = String.valueOf(notes.pop());
+            Log.d("key: ", n);
+            int key = 0;
+            switch (n) {
+                case "C":
+                    key = keyc_sound;
+                    break;
+                case "D":
+                    key = keyd_sound;
+                    break;
+                case "E":
+                    key = keye_sound;
+                    break;
+                case "F":
+                    key = keyf_sound;
+                    break;
+                case "G":
+                    key = keyg_sound;
+                    break;
+                case "A":
+                    key = keya_sound;
+                    break;
+                case "B":
+                    key = keyb_sound;
+                    break;
+                case "C2":
+                    key = keyc2_sound;
+                    break;
+                default:
+                    continue;
             }
+            // loop for rhythm
+            mySoundPool.play(key, volume, volume, 1, 0, 1f);
+            int r = (Integer) rhythm.get(j);
+            Log.d("rhythm: ", String.valueOf(r));
+            try {
+                Thread.sleep(r * 500);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        Pattern results = record();
+        Boolean pass = compare_play_and_record(p, results);
+        if (!pass) {
+            alertDialogBuilder.setTitle("Pattern not passed.");
+            alertDialogBuilder
+                    .setMessage("Would you like to try again?")
+                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, restart activity
+                            alertDialog.dismiss();
+                            playPattern(index, p);
+                            return;
+                        }
+                    })
+                    .setNegativeButton("No thanks, let me move on", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, continue on
+                            alertDialog.dismiss();
+                            playPattern(indices.pop(), p);
+                        }
+                    });
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        } else {
+            alertDialogBuilder.setTitle("Congratulations, you passed!");
+            alertDialogBuilder
+                    .setMessage("Would you like replay this level?")
+                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, restart activity
+                            alertDialog.dismiss();
+                            playPattern(index, p);
+                            return;
+                        }
+                    })
+                    .setNegativeButton("Bring on the next challenge!", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, continue on
+                            alertDialog.dismiss();
+                            playPattern(indices.pop(), p);
+                        }
+                    });
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 
@@ -281,7 +322,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
         return p;
     }
 
-    private boolean compare_play_and_record(Pattern p, Pattern r){
+    private boolean compare_play_and_record(Pattern p, Pattern r) {
         return false;
     }
 

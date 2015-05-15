@@ -1,6 +1,7 @@
 package com.example.glockenspiel;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by erik on 5/8/15.
@@ -13,26 +14,28 @@ public class Pattern extends ArrayList {
         this.rhythm = nums;
         this.notes = notes;
     }
-    public void setRhythm(int[][] rhythm) {
-        this.rhythm = rhythm;
-    }
-//    public void addRythym(Integer num){
-//        this.rhythm.add(num);
-//    }
+
     public int[][] getRhythms(){
         return rhythm;
     }
 
-
-    public void setNotes(String[][] notes) {
-        this.notes = notes;
+    public LinkedList getRSequence(int i){
+        LinkedList seq = new LinkedList();
+        for (int j = 0; j < this.rhythm[0].length; j++){
+            seq.add(this.rhythm[i][j]);
+        }
+        return seq;
     }
-
-//    public void addNote(String note){
-//        this.notes.add(note);
-//    }
 
     public String[][] getNotes(){
         return notes;
+    }
+
+    public LinkedList getNSequence(int i){
+        LinkedList<String> seq = new LinkedList();
+        for (int j = 0; j < this.notes[0].length; j++){
+            seq.add(this.notes[i][j]);
+        }
+        return seq;
     }
 }
