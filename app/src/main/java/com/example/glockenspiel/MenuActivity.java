@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.content.SharedPreferences;
 
 
 public class MenuActivity extends Activity implements AdapterView.OnItemSelectedListener{
@@ -20,6 +20,10 @@ public class MenuActivity extends Activity implements AdapterView.OnItemSelected
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //access or create saved data
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
+        //* http://techblogon.com/android-sharedpreferences-example-code/ *//
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         
@@ -74,3 +78,5 @@ public class MenuActivity extends Activity implements AdapterView.OnItemSelected
         return super.onOptionsItemSelected(item);
     }
 }
+
+

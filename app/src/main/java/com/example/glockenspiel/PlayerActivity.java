@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -350,5 +351,10 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     public boolean onTouch(View arg0, MotionEvent arg1) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    public void saveData(){
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
+
     }
 }
