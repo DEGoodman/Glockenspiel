@@ -32,7 +32,7 @@ public class Person {
         this.level = l;
     }
 
-    protected Person load_person(String name){
+    protected Person load_person(String name, Context context){
         return this;
     }
 

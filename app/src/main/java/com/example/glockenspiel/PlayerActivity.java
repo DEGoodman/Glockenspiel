@@ -20,9 +20,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PlayerActivity extends Activity implements OnTouchListener {
     // Variables
@@ -45,6 +43,12 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private boolean loop;
     private LinkedList<int[]> indices;
 
+
+    // Global data handler
+    SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
+    SharedPreferences.Editor editor = pref.edit();
+
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +64,9 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
         alertDialogBuilder = new AlertDialog.Builder(
                 context);
-
-        // set title
         alertDialogBuilder.setTitle("Selected Level");
-
-        // set dialog message
         alertDialogBuilder.setMessage(value);
-
-        // create alert dialog
         alertDialog = alertDialogBuilder.create();
-
-        // show it
         alertDialog.show();
 
         //play ambiance background music
@@ -114,7 +110,6 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         patterns = new Sequence(getApplicationContext(), value);
         // start = Button(); We still need to set this
         start_btn = (Button) findViewById(R.id.start_btn);
-
     }
 
 
@@ -173,11 +168,9 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         });
     }
 
-    /**
-     * **********************
-     * start sequence button *
-     * ***********************
-     */
+    /******************
+     * start sequence *
+     ******************/
     public void startSequence(View view) {
 
         //* fix this
@@ -288,6 +281,8 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, continue on
                             alertDialog.dismiss();
+                            // TODO: check if more indices exist. If not, goto next pattern
+                            // If no more patterns, level is complete!
                             playPattern(indices.pop(), p);
                         }
                     });
@@ -309,6 +304,8 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, continue on
                             alertDialog.dismiss();
+                            // TODO: check if more indices exist. If not, goto next pattern
+                            // If no more patterns, level is complete!
                             playPattern(indices.pop(), p);
                         }
                     });
@@ -351,10 +348,5 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     public boolean onTouch(View arg0, MotionEvent arg1) {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    public void saveData(){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
-
     }
 }

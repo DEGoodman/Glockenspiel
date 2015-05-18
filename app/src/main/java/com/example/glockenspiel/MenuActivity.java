@@ -3,12 +3,14 @@ package com.example.glockenspiel;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.content.SharedPreferences;
@@ -17,16 +19,18 @@ import android.content.SharedPreferences;
 public class MenuActivity extends Activity implements AdapterView.OnItemSelectedListener{
 	private Button play_btn;
 	Spinner level_spinner;
+    EditText player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //access or create saved data
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
         //* http://techblogon.com/android-sharedpreferences-example-code/ *//
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        
+
+        // Reference player name (edit text)
+        player = (EditText)findViewById(R.id.player_name);
+
         // Reference spinner (drop down list)
         level_spinner = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(this, R.array.levels, android.R.layout.simple_spinner_item);
@@ -42,6 +46,8 @@ public class MenuActivity extends Activity implements AdapterView.OnItemSelected
 						// Reference to player activity
 						Intent intent = new Intent(v.getContext(), PlayerActivity.class);
                         intent.putExtra("selected", level_spinner.getSelectedItem().toString());
+                        Log.v("Submitted name: ", player.getText().toString());
+                        intent.putExtra("name", player.getText().toString());
 						startActivityForResult(intent, 0);
 					}
 				});
