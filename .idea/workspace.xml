@@ -31,9 +31,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3217fea0-aa96-4029-b772-c6934564cb26" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/MenuActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/MenuActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Glockenspiel.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,28 +60,36 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PlayerActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PlayerActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2970297">
-              <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="61" column="59" selection-start-line="61" selection-start-column="52" selection-end-line="61" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3425#3600#0" expanded="true" />
-                <element signature="e#3599#3600#0" expanded="true" />
-                <element signature="e#12887#12888#0" expanded="true" />
-                <element signature="e#12915#12916#0" expanded="true" />
+                <element signature="e#3678#3853#0" expanded="true" />
+                <element signature="e#3852#3853#0" expanded="true" />
+                <element signature="e#13140#13141#0" expanded="true" />
+                <element signature="e#13168#13169#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Person.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Person.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="61" selection-start-line="34" selection-start-column="61" selection-end-line="34" selection-end-column="61" />
-              <folding />
+            <state vertical-scroll-proportion="0.5709571">
+              <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#673#674#0" expanded="true" />
+                <element signature="e#703#704#0" expanded="true" />
+                <element signature="e#747#748#0" expanded="true" />
+                <element signature="e#779#780#0" expanded="true" />
+                <element signature="e#824#825#0" expanded="true" />
+                <element signature="e#854#855#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1436,11 +1443,11 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PrimerActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Sequence.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Pattern.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/DataHandler.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Player.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/MenuActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java" />
       </list>
     </option>
   </component>
@@ -1877,10 +1884,10 @@
           <caret line="356" column="14" selection-start-line="356" selection-start-column="14" selection-end-line="356" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3425#3600#0" expanded="true" />
-            <element signature="e#3599#3600#0" expanded="true" />
-            <element signature="e#12887#12888#0" expanded="true" />
-            <element signature="e#12915#12916#0" expanded="true" />
+            <element signature="e#3678#3853#0" expanded="true" />
+            <element signature="e#3852#3853#0" expanded="true" />
+            <element signature="e#13140#13141#0" expanded="true" />
+            <element signature="e#13168#13169#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1889,7 +1896,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#673#674#0" expanded="true" />
+            <element signature="e#703#704#0" expanded="true" />
+            <element signature="e#747#748#0" expanded="true" />
+            <element signature="e#779#780#0" expanded="true" />
+            <element signature="e#824#825#0" expanded="true" />
+            <element signature="e#854#855#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1989,14 +2004,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="61" selection-start-line="34" selection-start-column="61" selection-end-line="34" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2030,14 +2037,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2970297">
-          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="61" column="59" selection-start-line="61" selection-start-column="52" selection-end-line="61" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3425#3600#0" expanded="true" />
-            <element signature="e#3599#3600#0" expanded="true" />
-            <element signature="e#12887#12888#0" expanded="true" />
-            <element signature="e#12915#12916#0" expanded="true" />
+            <element signature="e#3678#3853#0" expanded="true" />
+            <element signature="e#3852#3853#0" expanded="true" />
+            <element signature="e#13140#13141#0" expanded="true" />
+            <element signature="e#13168#13169#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5709571">
+          <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#673#674#0" expanded="true" />
+            <element signature="e#703#704#0" expanded="true" />
+            <element signature="e#747#748#0" expanded="true" />
+            <element signature="e#779#780#0" expanded="true" />
+            <element signature="e#824#825#0" expanded="true" />
+            <element signature="e#854#855#0" expanded="true" />
           </folding>
         </state>
       </provider>

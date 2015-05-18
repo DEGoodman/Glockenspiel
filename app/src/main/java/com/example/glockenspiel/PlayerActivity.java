@@ -47,6 +47,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private LinkedList<int[]> indices;
     private File data;
     private Context context;
+    protected Person person;
 
 
     @SuppressWarnings("deprecation")
@@ -84,6 +85,14 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         alertDialogBuilder.setMessage(value);
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+
+        //get user info
+        person = new Person(extras.getString("name"));
+        try {
+            person.load_person(context);
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
 
         //play ambiance background music
         float leftVolume = (float) 0.1;
