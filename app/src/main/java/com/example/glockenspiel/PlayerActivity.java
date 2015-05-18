@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -20,7 +19,11 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.LinkedList;
+import java.io.File;
 
 public class PlayerActivity extends Activity implements OnTouchListener {
     // Variables
@@ -42,11 +45,8 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     public static boolean monitorState = false;
     private boolean loop;
     private LinkedList<int[]> indices;
-
-
-    // Global data handler
-    SharedPreferences pref = getApplicationContext().getSharedPreferences("UserData", 0);
-    SharedPreferences.Editor editor = pref.edit();
+    private File data;
+    private Context context;
 
 
     @SuppressWarnings("deprecation")
@@ -54,13 +54,29 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        context = this;
+
+        // Global data handler
+        try {
+            data = new File(context.getFilesDir(), "persons.txt");
+        } catch (Exception e){
+            final String NEWFILE = new String("File for saving User data");
+            FileOutputStream fOut = null;
+            try {
+                fOut = openFileOutput("persons.txt",MODE_PRIVATE);
+                OutputStreamWriter osw = new OutputStreamWriter(fOut);
+                osw.write(NEWFILE);
+                osw.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
 
         // get level info
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("selected");
         }
-        final Context context = this;
 
         alertDialogBuilder = new AlertDialog.Builder(
                 context);
@@ -107,7 +123,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         populateKeys(); //<<----- initialize keys function
 
         //load sequence
-        patterns = new Sequence(getApplicationContext(), value);
+        patterns = new Sequence(context, value);
         // start = Button(); We still need to set this
         start_btn = (Button) findViewById(R.id.start_btn);
     }
@@ -159,7 +175,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
                     //display toast message when key pressed
                     if (showToast) {
-                        Context context = getApplicationContext();
+//                        Context context = getApplicationContext();
                         Toast toast = Toast.makeText(context, playKey, Toast.LENGTH_SHORT);
                         toast.show();
                     }
