@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.io.File;
@@ -65,9 +66,8 @@ public class PlayerActivity extends Activity implements OnTouchListener {
             FileOutputStream fOut = null;
             try {
                 fOut = openFileOutput("persons.txt",MODE_PRIVATE);
-                OutputStreamWriter osw = new OutputStreamWriter(fOut);
-                osw.write(NEWFILE);
-                osw.close();
+                fOut.write(NEWFILE.getBytes());
+                fOut.close();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -88,6 +88,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
         //get user info
         person = new Person(extras.getString("name"));
+
         try {
             person.load_person(context);
         } catch (FileNotFoundException e1) {
@@ -243,6 +244,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     public void playPattern(final int[] index, final Pattern p) {
         String playData = String.valueOf(index[0]) + String.valueOf(index[1]);
         Log.d("current play data: ", playData);
+        try {
+            person.save_person(this);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         LinkedList notes = p.getNSequence(index[1]);
         LinkedList rhythm = p.getRSequence(index[0]);
         // inner 'notes' loop

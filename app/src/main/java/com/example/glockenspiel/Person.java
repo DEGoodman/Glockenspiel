@@ -2,6 +2,7 @@ package com.example.glockenspiel;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -52,9 +53,13 @@ public class Person {
         try {
             while ( (line=bir.readLine()) != null) {
                 if (line.compareTo(this.name)==0){ // we found a user!
+                    Log.d("loaded file, name:",line);
                     this.score = new Integer(bir.readLine());
+                    Log.d("loaded file, score:",line);
                     this.level = bir.readLine();
+                    Log.d("loaded file, level:",line);
                     this.pattern = new Integer(bir.readLine());
+                    Log.d("loaded file, pattern:",line);
                     fIn.close();
                     isr.close();
                     bir.close();
