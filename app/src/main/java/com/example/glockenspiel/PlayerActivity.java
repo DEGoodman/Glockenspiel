@@ -398,7 +398,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
     private void progress(int result, final int[] index, final Pattern p) {
         if (result < 70) {
-            alertDialogBuilder.setTitle("Pattern not passed. You achieved " + result + "% accuracy.");
+            if (result == 0){
+                alertDialogBuilder.setTitle("Pattern not passed. Did you select the right notes?");
+            } else {
+                alertDialogBuilder.setTitle("Pattern not passed. You achieved " + result + "% accuracy.");
+            }
             alertDialogBuilder
                     .setMessage("Would you like to try again?")
                     .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
@@ -471,15 +475,27 @@ public class PlayerActivity extends Activity implements OnTouchListener {
             if(rec_notes.get(key).compareTo(String.valueOf(notes.get(key)))!= 0){
                 sameNotes = false;
                 Log.i("These notes are: ", "not the same");
+                return(0);
             }
         }
         Log.i("recorded times: ", String.valueOf(rec_rhythm));
-        float[] time = new float[rec_rhythm.size()];
-        //fancy math for comparing times
+        double[] time = new double[rec_rhythm.size() - 1];
+        //fancy math for getting times
         for (int l = 0; l < rec_rhythm.size() - 1; l++){
-            time[l] = rec_rhythm.get(l + 1) - rec_rhythm.get(l);
+            time[l] = (double)(rec_rhythm.get(l + 1) - rec_rhythm.get(l))/500;
+            Log.d("current time diff: ", String.valueOf(time[l]));
         }
-        return 75;
+        int total = 100;
+//        double[] res = new double[time.length];
+        // fancy math for comparing to rhythm
+        for (int d = 0; d < time.length; d++){
+            double base = Math.abs((Integer)rhythm.get(d) - time[d]); //total diff
+            base = Math.pow(1 + base, 5);
+//            res[d] = base;
+            total -= base;
+            Log.i("points deducted: ", String.valueOf(base));
+        }
+        if (total > 0){ return total; } else { return 0;}
     }
 
     private void addNoteTime(int keyed, Long now) {

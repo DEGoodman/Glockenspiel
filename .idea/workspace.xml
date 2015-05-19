@@ -63,22 +63,22 @@
       <file leaf-file-name="PlayerActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.42168674">
-              <caret line="476" column="50" selection-start-line="476" selection-start-column="50" selection-end-line="476" selection-end-column="50" />
+            <state vertical-scroll-proportion="1.0507042">
+              <caret line="497" column="57" selection-start-line="497" selection-start-column="57" selection-end-line="497" selection-end-column="57" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#5930#6105#0" expanded="true" />
                 <element signature="e#6104#6105#0" expanded="true" />
                 <element signature="e#8620#9546#0" expanded="true" />
                 <element signature="e#9545#9546#0" expanded="true" />
-                <element signature="e#14370#14748#0" expanded="true" />
-                <element signature="e#14747#14748#0" expanded="true" />
-                <element signature="e#14818#15404#0" expanded="true" />
-                <element signature="e#15403#15404#0" expanded="true" />
-                <element signature="e#15774#16152#0" expanded="true" />
-                <element signature="e#16151#16152#0" expanded="true" />
-                <element signature="e#16225#16811#0" expanded="true" />
-                <element signature="e#16810#16811#0" expanded="true" />
+                <element signature="e#14539#14917#0" expanded="true" />
+                <element signature="e#14916#14917#0" expanded="true" />
+                <element signature="e#14987#15573#0" expanded="true" />
+                <element signature="e#15572#15573#0" expanded="true" />
+                <element signature="e#15943#16321#0" expanded="true" />
+                <element signature="e#16320#16321#0" expanded="true" />
+                <element signature="e#16394#16980#0" expanded="true" />
+                <element signature="e#16979#16980#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1436,8 +1436,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/MenuActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Sequence.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/Person.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/assets/Intermediate.json" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java" />
       </list>
     </option>
   </component>
@@ -1812,7 +1812,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40807652" sideWeight="0.4970803" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.59298617" sideWeight="0.49464524" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.59298617" sideWeight="0.49464524" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38420492" sideWeight="0.5026774" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15060242" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1864,14 +1864,14 @@
             <element signature="e#6104#6105#0" expanded="true" />
             <element signature="e#8620#9546#0" expanded="true" />
             <element signature="e#9545#9546#0" expanded="true" />
-            <element signature="e#14370#14748#0" expanded="true" />
-            <element signature="e#14747#14748#0" expanded="true" />
-            <element signature="e#14818#15404#0" expanded="true" />
-            <element signature="e#15403#15404#0" expanded="true" />
-            <element signature="e#15774#16152#0" expanded="true" />
-            <element signature="e#16151#16152#0" expanded="true" />
-            <element signature="e#16225#16811#0" expanded="true" />
-            <element signature="e#16810#16811#0" expanded="true" />
+            <element signature="e#14539#14917#0" expanded="true" />
+            <element signature="e#14916#14917#0" expanded="true" />
+            <element signature="e#14987#15573#0" expanded="true" />
+            <element signature="e#15572#15573#0" expanded="true" />
+            <element signature="e#15943#16321#0" expanded="true" />
+            <element signature="e#16320#16321#0" expanded="true" />
+            <element signature="e#16394#16980#0" expanded="true" />
+            <element signature="e#16979#16980#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1945,14 +1945,14 @@
             <element signature="e#6104#6105#0" expanded="true" />
             <element signature="e#8620#9546#0" expanded="true" />
             <element signature="e#9545#9546#0" expanded="true" />
-            <element signature="e#14370#14748#0" expanded="true" />
-            <element signature="e#14747#14748#0" expanded="true" />
-            <element signature="e#14818#15404#0" expanded="true" />
-            <element signature="e#15403#15404#0" expanded="true" />
-            <element signature="e#15774#16152#0" expanded="true" />
-            <element signature="e#16151#16152#0" expanded="true" />
-            <element signature="e#16225#16811#0" expanded="true" />
-            <element signature="e#16810#16811#0" expanded="true" />
+            <element signature="e#14539#14917#0" expanded="true" />
+            <element signature="e#14916#14917#0" expanded="true" />
+            <element signature="e#14987#15573#0" expanded="true" />
+            <element signature="e#15572#15573#0" expanded="true" />
+            <element signature="e#15943#16321#0" expanded="true" />
+            <element signature="e#16320#16321#0" expanded="true" />
+            <element signature="e#16394#16980#0" expanded="true" />
+            <element signature="e#16979#16980#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2108,22 +2108,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/glockenspiel/PlayerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.42168674">
-          <caret line="476" column="50" selection-start-line="476" selection-start-column="50" selection-end-line="476" selection-end-column="50" />
+        <state vertical-scroll-proportion="1.0507042">
+          <caret line="497" column="57" selection-start-line="497" selection-start-column="57" selection-end-line="497" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#5930#6105#0" expanded="true" />
             <element signature="e#6104#6105#0" expanded="true" />
             <element signature="e#8620#9546#0" expanded="true" />
             <element signature="e#9545#9546#0" expanded="true" />
-            <element signature="e#14370#14748#0" expanded="true" />
-            <element signature="e#14747#14748#0" expanded="true" />
-            <element signature="e#14818#15404#0" expanded="true" />
-            <element signature="e#15403#15404#0" expanded="true" />
-            <element signature="e#15774#16152#0" expanded="true" />
-            <element signature="e#16151#16152#0" expanded="true" />
-            <element signature="e#16225#16811#0" expanded="true" />
-            <element signature="e#16810#16811#0" expanded="true" />
+            <element signature="e#14539#14917#0" expanded="true" />
+            <element signature="e#14916#14917#0" expanded="true" />
+            <element signature="e#14987#15573#0" expanded="true" />
+            <element signature="e#15572#15573#0" expanded="true" />
+            <element signature="e#15943#16321#0" expanded="true" />
+            <element signature="e#16320#16321#0" expanded="true" />
+            <element signature="e#16394#16980#0" expanded="true" />
+            <element signature="e#16979#16980#0" expanded="true" />
           </folding>
         </state>
       </provider>
