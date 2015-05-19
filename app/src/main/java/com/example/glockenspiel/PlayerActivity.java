@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.io.File;
+import java.util.Random;
 
 public class PlayerActivity extends Activity implements OnTouchListener {
     // Variables
@@ -152,7 +153,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         alertDialog.show();
 
         //get user info
-        person = new Person(extras.getString("name"));
+        person = new Person(extras.getString("name"), value);
         Log.d("new person: ", person.print_person());
 
         try {
@@ -308,17 +309,32 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                 indices.add(arr);
             }
         }
-        // if 'Primer', loop through note sequences in order
-        if (value.compareTo("Primer") == 0) {
-            if (person.index != 0) {
-                int i = person.index;
-                while (i > 0) {
-                    indices.pop();
-                    i--;
-                }
+        // the below plays weird. It just works better in order
+//        // if 'Primer', loop through note sequences in order
+//        if (value.compareTo("Primer") == 0) {
+//            if (person.index != 0) {
+//                int i = person.index;
+//                while (i > 0) {
+//                    indices.pop();
+//                    i--;
+//                }
+//            }
+//            playPattern(indices.pop(), p);
+//        } else { // randomize play order
+//            Random v = new Random();
+//            int i = v.nextInt(indices.size()); // select random value from existing index values
+//            int[] ind = indices.get(i); // assign int[] to temp value
+//            indices.remove(i); // remove this int[] from LinkedList
+//            playPattern(ind, p); // play this value
+//        }
+        if (person.index != 0) {
+            int i = person.index;
+            while (i > 0) {
+                indices.pop();
+                i--;
             }
-            playPattern(indices.pop(), p);
         }
+        playPattern(indices.pop(), p);
     }
 
     public void playPattern( int[] index, Pattern p) {
@@ -328,11 +344,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         String playData = String.valueOf(index[0]) + String.valueOf(index[1]);
         rec_notes = new ArrayList<>();
         rec_rhythm = new ArrayList<>();
-        try {
-            person.save_person(this);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        person.save_person(this);
         notes = p.getNSequence(index[1]);
         Log.d("notes:", String.valueOf(notes));
         rhythm = p.getRSequence(index[0]);
@@ -404,6 +416,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                             if (indices.size() > 0){
                                 playPattern(indices.pop(), p);
                             } else {
+                                person.pattern += 1;
                                 patternIndex(patternSet.pop());
                             }
                         }
@@ -429,6 +442,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                             if (indices.size() > 0){
                                 playPattern(indices.pop(), p);
                             } else {
+                                person.pattern += 1;
                                 patternIndex(patternSet.pop());
                             }
                         }
@@ -441,7 +455,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private void rec_helper(){
         Log.d("Record is true","Now in rec_helper");
         if(notes.size() == rec_notes.size()){
-            Log.d("sizes are equal","now check 'em");
+            Log.d("sizes are equal", "now check 'em");
             int result = compare();
             progress(result, temp_index, temp_p);
         }
@@ -451,6 +465,8 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         // TODO:
         // check rec_notes vs. temp_index
         // diff in timestamps in rec_rhythm vs temp_p...?
+        Log.i("recorded notes: ", String.valueOf(rec_notes));
+        Log.i("recorded times: ", String.valueOf(rec_rhythm));
         Log.d("Comparison checks out", "Move to next pattern");
         record = false;
         return 75;

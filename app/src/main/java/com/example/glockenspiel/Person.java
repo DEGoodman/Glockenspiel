@@ -28,13 +28,13 @@ public class Person {
     int pattern;
     int index;
 
-    public Person(String name){
+    public Person(String name, String level){
         this.name = name;
         if (name.compareTo("") == 0) {
             this.name = "temp";
         }
         this.score = 0;
-        this.level = "Primer";
+        this.level = level;
         this.pattern = 0;
         this.index = 0;
     }
@@ -82,21 +82,21 @@ public class Person {
         return this; // if user not found, use new user
     }
 
-    protected void save_person(Context context) throws IOException {
+    protected void save_person(Context context) {
         boolean has_user = false;
         // to change file in-place, we are reading whole file, making changes, then writing whole file.
         File old = new File("persons.txt");
-        FileInputStream fIn = context.openFileInput("persons.txt");
-        InputStreamReader isr = new InputStreamReader(fIn);
-        BufferedReader bir = new BufferedReader(isr);
-
-        // read 'keeper' data into temp file
-        File temp = File.createTempFile("tempfile", ".tmp");
-        FileOutputStream fOut = context.openFileOutput("tempfile.tmp",context.MODE_WORLD_READABLE);
-        OutputStreamWriter osw = new OutputStreamWriter(fOut);
-
-        String line = null;
         try {
+            FileInputStream fIn = context.openFileInput("persons.txt");
+            InputStreamReader isr = new InputStreamReader(fIn);
+            BufferedReader bir = new BufferedReader(isr);
+
+            // read 'keeper' data into temp file
+            File temp = File.createTempFile("tempfile", ".tmp");
+            FileOutputStream fOut = context.openFileOutput("tempfile.tmp", context.MODE_WORLD_READABLE);
+            OutputStreamWriter osw = new OutputStreamWriter(fOut);
+
+            String line = null;
             while ( (line=bir.readLine()) != null) {
                 Log.i("Current line:", line);
                 if (line.compareTo(this.name) == 0) { // we found the user!
@@ -123,19 +123,19 @@ public class Person {
                 osw.write(this.pattern + "\n");
                 osw.write(this.index + "\n");
             }
+            // delete old file
+            old.delete();
+            //rename temp file to old filename
+            boolean success = temp.renameTo(old);
+
+            //cleanup
+            fIn.close();
+            isr.close();
+            bir.close();
+            osw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        fIn.close();
-        isr.close();
-        bir.close();
-        osw.close();
-
-        // delete old file
-        old.delete();
-        //rename temp file to old filename
-        boolean success = temp.renameTo(old);
     }
 
     public String print_person(){
