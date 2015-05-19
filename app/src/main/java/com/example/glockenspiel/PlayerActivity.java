@@ -19,9 +19,12 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -59,6 +62,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private LinkedList<Pattern> patternSet;
     LinkedList notes;
     LinkedList rhythm;
+    private int num_notes;
 
 
     @SuppressWarnings("deprecation")
@@ -69,17 +73,67 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         context = this;
         record = false;
 
-        // Global data handler
+        // read/write data file
         try {
-            data = new File(context.getFilesDir(), "persons.txt");
-        } catch (Exception e){
-            final String NEWFILE = new String("File for saving User data");
-            FileOutputStream fOut = null;
+            // catches IOException below
+            final String TESTSTRING = new String("Hello Android");
+
+       /* We have to use the openFileOutput()-method
+       * the ActivityContext provides, to
+       * protect your file from others and
+       * This is done for security-reasons.
+       * We chose MODE_WORLD_READABLE, because
+       *  we have nothing to hide in our file */
+            FileOutputStream fOut = openFileOutput("samplefile.txt",MODE_WORLD_READABLE);
+            OutputStreamWriter osw = new OutputStreamWriter(fOut);
+
+            // Write the string to the file
+            osw.write(TESTSTRING);
+
+       /* ensure that everything is
+        * really written out and close */
+            osw.flush();
+            osw.close();
+
+        //Reading the file back...
+
+       /* We have to use the openFileInput()-method
+        * the ActivityContext provides.
+        * Again for security reasons with
+        * openFileInput(...) */
+
+            FileInputStream fIn = openFileInput("samplefile.txt");
+            InputStreamReader isr = new InputStreamReader(fIn);
+
+        /* Prepare a char-Array that will
+         * hold the chars we read back in. */
+            char[] inputBuffer = new char[TESTSTRING.length()];
+
+            // Fill the Buffer with data from the file
+            isr.read(inputBuffer);
+
+            // Transform the chars to a String
+            String readString = new String(inputBuffer);
+
+            // Check if we read back the same chars that we had written out
+            boolean isTheSame = TESTSTRING.equals(readString);
+
+            Log.i("File Reading stuff", "success = " + isTheSame);
+
+        } catch (IOException ioe)
+        {ioe.printStackTrace();}
+
+        //check for data file
+        File f= new File("persons.txt");
+        if(!f.exists()) {
             try {
-                fOut = openFileOutput("persons.txt",MODE_PRIVATE);
-                fOut.write(NEWFILE.getBytes());
-                fOut.close();
-            } catch (Exception e1) {
+                final String STARTSTRING = new String("File for saving User data\n");
+                FileOutputStream fOut = openFileOutput("persons.txt",MODE_WORLD_READABLE);
+                OutputStreamWriter osw = new OutputStreamWriter(fOut);
+                osw.write(STARTSTRING);
+                osw.flush();
+                osw.close();
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
@@ -99,6 +153,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
         //get user info
         person = new Person(extras.getString("name"));
+        Log.d("new person: ", person.print_person());
 
         try {
             person.load_person(context);
@@ -232,6 +287,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     }
 
     private void patternIndex(Pattern p) {
+        person.index = 0; // reset player index for new pattern
         String[][] notes = p.getNotes();
         int[][] rhythm = p.getRhythms();
         // check length of the inner arrays
@@ -254,11 +310,13 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         }
         // if 'Primer', loop through note sequences in order
         if (value.compareTo("Primer") == 0) {
-            // TODO: load index of pattern if we navigate away from popups
-//            int i = person.index;
-//            while (i > 0){
-//                indices.pop();
-//            }
+            if (person.index != 0) {
+                int i = person.index;
+                while (i > 0) {
+                    indices.pop();
+                    i--;
+                }
+            }
             playPattern(indices.pop(), p);
         }
     }
@@ -268,7 +326,6 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         temp_index = index;
         temp_p = p;
         String playData = String.valueOf(index[0]) + String.valueOf(index[1]);
-        Log.d("current play data: ", playData);
         rec_notes = new ArrayList<>();
         rec_rhythm = new ArrayList<>();
         try {
@@ -383,12 +440,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
     private void rec_helper(){
         Log.d("Record is true","Now in rec_helper");
-        if(temp_index.length == rec_notes.size()){
+        if(notes.size() == rec_notes.size()){
             Log.d("sizes are equal","now check 'em");
             int result = compare();
             progress(result, temp_index, temp_p);
         }
-        Log.d("doing", "nothing?");
     }
 
     private int compare() {
