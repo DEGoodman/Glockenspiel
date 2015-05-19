@@ -22,7 +22,8 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.io.File;
 
@@ -49,6 +50,15 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private File data;
     private Context context;
     protected Person person;
+    private boolean record;
+    Calendar calendar = Calendar.getInstance();
+    ArrayList<String> rec_notes;
+    ArrayList<Long> rec_rhythm;
+    int[] temp_index;
+    Pattern temp_p;
+    private LinkedList<Pattern> patternSet;
+    LinkedList notes;
+    LinkedList rhythm;
 
 
     @SuppressWarnings("deprecation")
@@ -57,6 +67,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
         context = this;
+        record = false;
 
         // Global data handler
         try {
@@ -178,6 +189,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         button.setSoundEffectsEnabled(false);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (record) {
+                    Long now = calendar.getTimeInMillis();
+                    addNoteTime(button, now);
+                    rec_helper();
+                }
                 if (loaded) {
                     mySoundPool.play(key_player, volume, volume, 1, 0, 1f);
                     Layout label = button.getLayout();
@@ -198,20 +214,21 @@ public class PlayerActivity extends Activity implements OnTouchListener {
      * start sequence *
      ******************/
     public void startSequence(View view) {
-
+    patternSet = new LinkedList<Pattern>();
         //* fix this
         //play sequence
-//      if (patterns.getPatterns().size() > 0){
-//            for (Pattern p: patterns.getPatterns())
-//                play_pattern(p);
-//      } else {
-//            alertDialogBuilder.setTitle("No sequences to play!");
-//            alertDialogBuilder.setMessage("Something went wrong. Try another level.");
-//            alertDialog = alertDialogBuilder.create();
-//            alertDialog.show();
-//        }
+      if (patterns.getPatterns().size() > 0){
+            for (Pattern p: patterns.getPatterns())
+                patternSet.add(p);
+          patternIndex(patternSet.pop());
 
-        patternIndex(patterns.getPatterns().get(0));
+      } else {
+            alertDialogBuilder.setTitle("No sequences to play!");
+            alertDialogBuilder.setMessage("Something went wrong. Try another level.");
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+
     }
 
     private void patternIndex(Pattern p) {
@@ -237,23 +254,35 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         }
         // if 'Primer', loop through note sequences in order
         if (value.compareTo("Primer") == 0) {
+            // TODO: load index of pattern if we navigate away from popups
+//            int i = person.index;
+//            while (i > 0){
+//                indices.pop();
+//            }
             playPattern(indices.pop(), p);
         }
     }
 
-    public void playPattern(final int[] index, final Pattern p) {
+    public void playPattern( int[] index, Pattern p) {
+        person.index += 1; //increment index
+        temp_index = index;
+        temp_p = p;
         String playData = String.valueOf(index[0]) + String.valueOf(index[1]);
         Log.d("current play data: ", playData);
+        rec_notes = new ArrayList<>();
+        rec_rhythm = new ArrayList<>();
         try {
             person.save_person(this);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        LinkedList notes = p.getNSequence(index[1]);
-        LinkedList rhythm = p.getRSequence(index[0]);
+        notes = p.getNSequence(index[1]);
+        Log.d("notes:", String.valueOf(notes));
+        rhythm = p.getRSequence(index[0]);
+        Log.d("rhythm:", String.valueOf(rhythm));
         // inner 'notes' loop
-        for (int j = 0; j <= notes.size(); j++) {
-            String n = String.valueOf(notes.pop());
+        for (int j = 0; j < notes.size(); j++) {
+            String n = String.valueOf(notes.get(j));
             Log.d("key: ", n);
             int key = 0;
             switch (n) {
@@ -294,10 +323,13 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                 e1.printStackTrace();
             }
         }
-        Pattern results = record();
-        Boolean pass = compare_play_and_record(p, results);
-        if (!pass) {
-            alertDialogBuilder.setTitle("Pattern not passed.");
+        record = true;
+        rec_helper();
+    }
+
+    private void progress(int result, final int[] index, final Pattern p) {
+        if (result < 70) {
+            alertDialogBuilder.setTitle("Pattern not passed. You achieved " + result + "% accuracy.");
             alertDialogBuilder
                     .setMessage("Would you like to try again?")
                     .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
@@ -312,15 +344,17 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, continue on
                             alertDialog.dismiss();
-                            // TODO: check if more indices exist. If not, goto next pattern
-                            // If no more patterns, level is complete!
-                            playPattern(indices.pop(), p);
+                            if (indices.size() > 0){
+                                playPattern(indices.pop(), p);
+                            } else {
+                                patternIndex(patternSet.pop());
+                            }
                         }
                     });
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         } else {
-            alertDialogBuilder.setTitle("Congratulations, you passed!");
+            alertDialogBuilder.setTitle("Congratulations, you passed with " + result + "% accuracy!");
             alertDialogBuilder
                     .setMessage("Would you like replay this level?")
                     .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
@@ -335,9 +369,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, continue on
                             alertDialog.dismiss();
-                            // TODO: check if more indices exist. If not, goto next pattern
-                            // If no more patterns, level is complete!
-                            playPattern(indices.pop(), p);
+                            if (indices.size() > 0){
+                                playPattern(indices.pop(), p);
+                            } else {
+                                patternIndex(patternSet.pop());
+                            }
                         }
                     });
             alertDialog = alertDialogBuilder.create();
@@ -345,14 +381,32 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         }
     }
 
-
-    private Pattern record() {
-        Pattern p = new Pattern(null, null);
-        return p;
+    private void rec_helper(){
+        Log.d("Record is true","Now in rec_helper");
+        if(temp_index.length == rec_notes.size()){
+            Log.d("sizes are equal","now check 'em");
+            int result = compare();
+            progress(result, temp_index, temp_p);
+        }
+        Log.d("doing", "nothing?");
     }
 
-    private boolean compare_play_and_record(Pattern p, Pattern r) {
-        return false;
+    private int compare() {
+        // TODO:
+        // check rec_notes vs. temp_index
+        // diff in timestamps in rec_rhythm vs temp_p...?
+        Log.d("Comparison checks out", "Move to next pattern");
+        record = false;
+        return 75;
+    }
+
+    private void addNoteTime(Button button, Long now) {
+        Log.d("now we are in","addNoteTime");
+        int id = button.getId();
+        Log.d("hit key: ", String.valueOf(button.getId()));
+        Log.d("time: ", String.valueOf(now));
+        rec_notes.add(String.valueOf(button.getId()));
+        rec_rhythm.add(now);
     }
 
     @Override

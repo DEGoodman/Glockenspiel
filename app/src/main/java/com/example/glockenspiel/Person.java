@@ -24,12 +24,14 @@ public class Person {
     int score;
     String level;
     int pattern;
+    int index;
 
     public Person(String name){
         this.name = name;
         this.score = 0;
         this.level = "Primer";
         this.pattern = 0;
+        this.index = 0;
     }
 
     protected void update_score (int s){
@@ -43,6 +45,8 @@ public class Person {
     protected void update_level (String l){
         this.level = l;
     }
+
+    protected void update_index (int i){this.index = i;}
 
     protected Person load_person(Context context) throws FileNotFoundException {
         FileInputStream fIn = context.openFileInput("persons.txt");
@@ -60,6 +64,8 @@ public class Person {
                     Log.d("loaded file, level:",line);
                     this.pattern = new Integer(bir.readLine());
                     Log.d("loaded file, pattern:",line);
+                    this.index = new Integer(bir.readLine());
+                    Log.d("loaded file, index:",line);
                     fIn.close();
                     isr.close();
                     bir.close();
@@ -94,6 +100,8 @@ public class Person {
                     bw.write(this.level);
                     this.pattern = new Integer(bir.readLine());
                     bw.write(this.pattern);
+                    this.index = new Integer(bir.readLine());
+                    bw.write(this.index);
                 } else {
                     bw.write(line);
                 }
