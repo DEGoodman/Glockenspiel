@@ -55,7 +55,6 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     private Context context;
     protected Person person;
     private boolean record;
-    Calendar calendar = Calendar.getInstance();
     ArrayList<String> rec_notes;
     ArrayList<Long> rec_rhythm;
     int[] temp_index;
@@ -246,8 +245,9 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (record) {
+                    Calendar calendar = Calendar.getInstance();
                     Long now = calendar.getTimeInMillis();
-                    addNoteTime(button, now);
+                    addNoteTime(key_player, now);
                     rec_helper();
                 }
                 if (loaded) {
@@ -462,23 +462,60 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     }
 
     private int compare() {
+        record = false; // turn off recording
         // TODO:
-        // check rec_notes vs. temp_index
         // diff in timestamps in rec_rhythm vs temp_p...?
-        Log.i("recorded notes: ", String.valueOf(rec_notes));
+        // check note values
+        boolean sameNotes = true;
+        for (int key = 0; key < rec_notes.size(); key++){
+            if(rec_notes.get(key).compareTo(String.valueOf(notes.get(key)))!= 0){
+                sameNotes = false;
+                Log.i("These notes are: ", "not the same");
+            }
+        }
         Log.i("recorded times: ", String.valueOf(rec_rhythm));
-        Log.d("Comparison checks out", "Move to next pattern");
-        record = false;
+        float[] time = new float[rec_rhythm.size()];
+        //fancy math for comparing times
+        for (int l = 0; l < rec_rhythm.size() - 1; l++){
+            time[l] = rec_rhythm.get(l + 1) - rec_rhythm.get(l);
+        }
         return 75;
     }
 
-    private void addNoteTime(Button button, Long now) {
-        Log.d("now we are in","addNoteTime");
-        int id = button.getId();
-        Log.d("hit key: ", String.valueOf(button.getId()));
-        Log.d("time: ", String.valueOf(now));
-        rec_notes.add(String.valueOf(button.getId()));
+    private void addNoteTime(int keyed, Long now) {
         rec_rhythm.add(now);
+        // assign key pressed based on keyed value
+        String pressed = "";
+        switch (keyed){
+            case 1:
+                pressed = "A";
+                break;
+            case 2:
+                pressed = "B";
+                break;
+            case 3:
+                pressed = "C";
+                break;
+            case 4:
+                pressed = "D";
+                break;
+            case 5:
+                pressed = "E";
+                break;
+            case 6:
+                pressed = "F";
+                break;
+            case 7:
+                pressed = "G";
+                break;
+            case 8:
+                pressed = "C2";
+                break;
+            default:
+                pressed=String.valueOf(keyed);
+                break;
+        }
+        rec_notes.add(pressed);
     }
 
     @Override
