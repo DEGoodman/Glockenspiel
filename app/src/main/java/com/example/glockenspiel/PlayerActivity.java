@@ -11,6 +11,7 @@ import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -63,6 +64,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
     LinkedList notes;
     LinkedList rhythm;
     private int num_notes;
+    Toast toast;
 
 
     @SuppressWarnings("deprecation")
@@ -72,6 +74,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         setContentView(R.layout.activity_player);
         context = this;
         record = false;
+        toast = null;
 
         // read/write data file
         try {
@@ -257,8 +260,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
                     //display toast message when key pressed
                     if (showToast) {
-//                        Context context = getApplicationContext();
-                        Toast toast = Toast.makeText(context, playKey, Toast.LENGTH_SHORT);
+                        toast = Toast.makeText(context, playKey, Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }
@@ -352,7 +354,10 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         // inner 'notes' loop
         for (int j = 0; j < notes.size(); j++) {
             String n = String.valueOf(notes.get(j));
-            Log.d("key: ", n);
+            //display toast message when key pressed
+            toast=Toast.makeText(context, n, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, -10);
+            toast.show();
             int key = 0;
             switch (n) {
                 case "C":
@@ -398,62 +403,33 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
     private void progress(int result, final int[] index, final Pattern p) {
         if (result < 70) {
-            if (result == 0){
-                alertDialogBuilder.setTitle("Pattern not passed. Did you select the right notes?");
-            } else {
-                alertDialogBuilder.setTitle("Pattern not passed. You achieved " + result + "% accuracy.");
-            }
-            alertDialogBuilder
-                    .setMessage("Would you like to try again?")
-                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, restart activity
-                            alertDialog.dismiss();
-                            playPattern(index, p);
-                            return;
-                        }
-                    })
-                    .setNegativeButton("No thanks, let me move on", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, continue on
-                            alertDialog.dismiss();
-                            if (indices.size() > 0){
-                                playPattern(indices.pop(), p);
-                            } else {
-                                person.pattern += 1;
-                                patternIndex(patternSet.pop());
-                            }
-                        }
-                    });
-            alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+            alertDialogBuilder.setTitle("Not quite,");
+            alertDialogBuilder.setMessage("Let's try again.")
+                               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                   public void onClick(DialogInterface dialog, int id) {
+                                       alertDialog.dismiss();
+                                       playPattern(index, p);
+                                       return;
+                                   }
+                               });
+
         } else {
             alertDialogBuilder.setTitle("Congratulations, you passed with " + result + "% accuracy!");
-            alertDialogBuilder
-                    .setMessage("Would you like replay this level?")
-                    .setPositiveButton("Ok, one more time", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, restart activity
-                            alertDialog.dismiss();
-                            playPattern(index, p);
-                            return;
-                        }
-                    })
-                    .setNegativeButton("Bring on the next challenge!", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, continue on
-                            alertDialog.dismiss();
-                            if (indices.size() > 0){
-                                playPattern(indices.pop(), p);
-                            } else {
-                                person.pattern += 1;
-                                patternIndex(patternSet.pop());
-                            }
-                        }
-                    });
-            alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+                alertDialogBuilder.setMessage("Onwards!")
+                                   .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            alertDialog.dismiss();
+                                            if (indices.size() > 0) {
+                                                playPattern(indices.pop(), p);
+                                            } else {
+                                                person.pattern += 1;
+                                                patternIndex(patternSet.pop());
+                                            }
+                                        }
+                                   });
         }
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void rec_helper(){
@@ -467,34 +443,29 @@ public class PlayerActivity extends Activity implements OnTouchListener {
 
     private int compare() {
         record = false; // turn off recording
-        // TODO:
-        // diff in timestamps in rec_rhythm vs temp_p...?
         // check note values
-        boolean sameNotes = true;
+        float rightNotes = 0.0f;
         for (int key = 0; key < rec_notes.size(); key++){
-            if(rec_notes.get(key).compareTo(String.valueOf(notes.get(key)))!= 0){
-                sameNotes = false;
-                Log.i("These notes are: ", "not the same");
-                return(0);
+            if(rec_notes.get(key).compareTo(String.valueOf(notes.get(key)))== 0){
+                rightNotes += 1f;
             }
         }
-        Log.i("recorded times: ", String.valueOf(rec_rhythm));
+        float notesCorrect = rightNotes/rec_notes.size();
         double[] time = new double[rec_rhythm.size() - 1];
-        //fancy math for getting times
+        //fancy math for getting time differences
         for (int l = 0; l < rec_rhythm.size() - 1; l++){
             time[l] = (double)(rec_rhythm.get(l + 1) - rec_rhythm.get(l))/500;
-            Log.d("current time diff: ", String.valueOf(time[l]));
         }
-        int total = 100;
-//        double[] res = new double[time.length];
+        int total = 100; // max points before deductions
         // fancy math for comparing to rhythm
         for (int d = 0; d < time.length; d++){
             double base = Math.abs((Integer)rhythm.get(d) - time[d]); //total diff
             base = Math.pow(1 + base, 5);
-//            res[d] = base;
-            total -= base;
-            Log.i("points deducted: ", String.valueOf(base));
+            total -= base; // subtract errors from total
         }
+        // multiply total by %notes correct
+        total *= notesCorrect;
+        Log.i("final points: ", String.valueOf(total));
         if (total > 0){ return total; } else { return 0;}
     }
 
