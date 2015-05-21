@@ -311,7 +311,7 @@ public class PlayerActivity extends Activity implements OnTouchListener {
                 indices.add(arr);
             }
         }
-        // the below plays weird. It just works better in order
+        // The below segment is awkward to play. It just works better in order
 //        // if 'Primer', loop through note sequences in order
 //        if (value.compareTo("Primer") == 0) {
 //            if (person.index != 0) {
@@ -355,9 +355,11 @@ public class PlayerActivity extends Activity implements OnTouchListener {
         for (int j = 0; j < notes.size(); j++) {
             String n = String.valueOf(notes.get(j));
             //display toast message when key pressed
-            toast=Toast.makeText(context, n, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, -10);
-            toast.show();
+            if (j == 0) {
+                toast = Toast.makeText(context, n, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, -10);
+                toast.show();
+            }
             int key = 0;
             switch (n) {
                 case "C":
@@ -417,19 +419,33 @@ public class PlayerActivity extends Activity implements OnTouchListener {
             alertDialogBuilder.setTitle("Congratulations, you passed with " + result + "% accuracy!");
                 alertDialogBuilder.setMessage("Onwards!")
                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            alertDialog.dismiss();
-                                            if (indices.size() > 0) {
-                                                playPattern(indices.pop(), p);
-                                            } else {
-                                                person.pattern += 1;
-                                                patternIndex(patternSet.pop());
-                                            }
-                                        }
+                                       public void onClick(DialogInterface dialog, int id) {
+                                           alertDialog.dismiss();
+                                           if (indices.size() > 0) {
+                                               playPattern(indices.pop(), p);
+                                           } else if (patternSet.size() > 0) {
+                                               person.pattern += 1;
+                                               patternIndex(patternSet.pop());
+                                           } else { // end of level
+                                               alertDialog.dismiss();
+                                               nextLevel();
+
+                                           }
+                                       }
                                    });
         }
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void nextLevel() {
+        alertDialogBuilder.setTitle("Congratulations, you have completed this level!");
+        alertDialogBuilder.setMessage("Select 'OK' to start Free Play, or return to main menu to select a new level.")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        alertDialog.dismiss();
+                    }
+                });
     }
 
     private void rec_helper(){
